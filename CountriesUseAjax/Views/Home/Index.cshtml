@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@section Scripts
+{
+    <script>
+        var $province = $('#Province');
+        var $district = $('#District');
+
+        //bắt giá trị khi thay đổi sự kiện
+        $province.on('change', function () {
+            var $this = $(this);
+            $.ajax({
+                url: '@Url.Action("GetDistricts", "Home")', //lấy giá trị bên homecontroller
+                method: 'Get', //trả về get thì để là get, pot thì để là pot
+                dataType: 'json',
+                data: {
+                    provinceId: $this.val()
+                }
+            }).done(function (data) {
+                $district.find('option:not(:first)').remove(); //khi chọn lại tỉnh thì xóa hết dữ liệu cũ trừ thằng đầu
+                var result = ''; //khởi tạo giá trị vì k để null , phải để chuỗi rỗng
+
+                //viết foreach bằng js (viết jq khác nữa)
+
+                data.forEach(ele => {
+                    result += `<option value="${ele.value}">${ele.text}</option>`;
+                });
+                $district.append(result); //chèn đoạn result vào trong district
+            });
+
+        });
+    </script>
+}
+<div class="text-center">
+    <h1 class="display-4">Code Asp.Net Core MVC - JavaScript - Ajax</h1>
+</div>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label for="Province">Tỉnh thành</label>
+                        <select id="Province" class="form-control">
+                            <option value="">--Không chọn--</option>
+                            @foreach (var option in (ViewBag.Province as IEnumerable<SelectListItem>)) //Ép kiểu
+                            {
+                                <option value="@option.Value">@option.Text</option>
+                            }
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="District">Quận huyện</label>
+                        <select id="District" class="form-control">
+                            <option value="">--Không chọn--</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div style="color:green; font-size:22px">
+                    Bạn đang ở khu vực: <div id="divResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
