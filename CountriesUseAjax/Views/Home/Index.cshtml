@@ -7,29 +7,48 @@
     <script>
         var $province = $('#Province');
         var $district = $('#District');
+        var $ward = $('#Wards');
 
-        //bắt giá trị khi thay đổi sự kiện
+
         $province.on('change', function () {
             var $this = $(this);
             $.ajax({
-                url: '@Url.Action("GetDistricts", "Home")', //lấy giá trị bên homecontroller
-                method: 'Get', //trả về get thì để là get, pot thì để là pot
+                url: '@Url.Action("GetDistricts", "Home")',
+                method: 'Get',
                 dataType: 'json',
                 data: {
                     provinceId: $this.val()
                 }
+
             }).done(function (data) {
-                $district.find('option:not(:first)').remove(); //khi chọn lại tỉnh thì xóa hết dữ liệu cũ trừ thằng đầu
-                var result = ''; //khởi tạo giá trị vì k để null , phải để chuỗi rỗng
-
-                //viết foreach bằng js (viết jq khác nữa)
-
+                $district.find('option:not(:first)').remove();
+                $ward.find('option:not(:first)').remove();
+                var result = '';
                 data.forEach(ele => {
                     result += `<option value="${ele.value}">${ele.text}</option>`;
                 });
-                $district.append(result); //chèn đoạn result vào trong district
-            });
+                $district.append(result);
+            })
+        });
 
+        $district.on('change', function () {
+            var $this = $(this);
+            $.ajax({
+                url: '@Url.Action("GetWards", "Home")',
+                method: 'Get',
+                dataType: 'json',
+                data: {
+                    districtId: $this.val()
+                }
+
+            }).done(function (data) {
+                $ward.find('option:not(:first)').remove();
+                var result = '';
+                data.forEach(ele => {
+                    result += `<option value="${ele.value}">${ele.text}</option>`;
+                });
+                $ward.append(result);
+            })
         });
     </script>
 }
@@ -45,7 +64,7 @@
                         <label for="Province">Tỉnh thành</label>
                         <select id="Province" class="form-control">
                             <option value="">--Không chọn--</option>
-                            @foreach (var option in (ViewBag.Province as IEnumerable<SelectListItem>)) //Ép kiểu
+                            @foreach (var option in (ViewBag.Province as IEnumerable<SelectListItem>))
                             {
                                 <option value="@option.Value">@option.Text</option>
                             }
@@ -55,6 +74,12 @@
                     <div class="form-group">
                         <label for="District">Quận huyện</label>
                         <select id="District" class="form-control">
+                            <option value="">--Không chọn--</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Wards">Xã Phường</label>
+                        <select id="Wards" class="form-control">
                             <option value="">--Không chọn--</option>
                         </select>
                     </div>

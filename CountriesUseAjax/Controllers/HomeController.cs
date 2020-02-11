@@ -44,6 +44,18 @@ namespace CountriesUseAjax.Controllers
             return Json(temp);
         }
 
+        [HttpGet]
+        public JsonResult GetWards(int districtId)
+        {
+            var temp = _context.Wards.Where(x => x.DistrictId == districtId).Select(x => new SelectListItem
+            {
+                Text = x.Name,
+                Value = x.Id.ToString()
+            }).ToList();
+
+            return Json(temp);
+        }
+
         public IActionResult Privacy()
         {
             return View();

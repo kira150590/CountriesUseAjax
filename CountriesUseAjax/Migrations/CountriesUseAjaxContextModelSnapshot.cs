@@ -68,11 +68,48 @@ namespace CountriesUseAjax.Migrations
                     b.ToTable("Provinces");
                 });
 
+            modelBuilder.Entity("CountriesUseAjax.Models.Ward", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<int>("DistrictId")
+                        .HasColumnType("int")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DistrictId");
+
+                    b.ToTable("Wards");
+                });
+
             modelBuilder.Entity("CountriesUseAjax.Models.District", b =>
                 {
                     b.HasOne("CountriesUseAjax.Models.Province", "Provinces")
                         .WithMany("Districts")
                         .HasForeignKey("ProvinceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CountriesUseAjax.Models.Ward", b =>
+                {
+                    b.HasOne("CountriesUseAjax.Models.District", "Districts")
+                        .WithMany()
+                        .HasForeignKey("DistrictId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
